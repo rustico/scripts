@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  commit=1
+elif [ "$1" = "n" ]; then
+  commit=`git rev-list HEAD --count`
+  commit=$(($commit+1))
+elif [ "$1" = "p" ]; then
+  commit=`git rev-list HEAD --count`
+  commit=$(($commit-1))
+else
+  commit=$1
+fi
+
+echo "commit number: $commit"
+git rev-list  master | tail -$commit | head -1 | xargs git checkout
