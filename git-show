@@ -1,0 +1,3 @@
+#!/bin/sh
+# https://github.com/ymattw/ydiff
+git show | ydiff -s -w 0
