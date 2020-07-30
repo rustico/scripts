@@ -1,0 +1,22 @@
+#!/bin/bash
+# Examples
+# aws-add-ip sg-12345 5432
+# aws-add-ip sg-12345 22
+# aws-add-ip sg-12345 8080
+
+GROUP_ID=$1
+PORT=$2
+
+OLD_IP=`cat ~/.aws/.oldip`
+
+# borramos la ip vieja
+aws ec2 revoke-security-group-ingress --group-id $GROUP_ID --protocol tcp --port $PORT --cidr $OLD_IP/32
+
+# agregamos la ip
+curl -s http://whatismyip.akamai.com/ > ~/.aws/.oldip
+IP=`cat ~/.aws/.oldip`
+
+aws ec2 authorize-security-group-ingress \
+    --group-id $GROUP_ID \
+    --ip-permissions IpProtocol=tcp,FromPort=$PORT,ToPort=$PORT,IpRanges='[{CidrIp='$IP'/32,Description="Nico Bases Casa"}]'
+
